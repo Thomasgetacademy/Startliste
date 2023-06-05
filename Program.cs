@@ -14,30 +14,39 @@ namespace Startliste
             foreach (var line in startlist)
             {
                 var lineField = line.Split(",");
-                var newRegistration = new Registration(lineField[0], lineField[1], lineField[2],
-                    lineField[3], lineField[4], lineField[5]);
+                var newRegistration = new Registration(
+                    lineField[0],
+                    lineField[1],
+                    lineField[2],
+                    lineField[3],
+                    lineField[4],
+                    lineField[5]
+                    );
 
                 registrationList.Add(newRegistration);
 
-                if (!clubList.Contains(returnClub(clubList, lineField[2])))
+                var searchClubs = FindClub(clubList, lineField[2]);
+
+                if (searchClubs == null)
                 {
-
+                    clubList.Add(new Club(lineField[2]));
+                    FindClub(clubList, lineField[2]).AddClubRegistration(newRegistration);
                 }
-
-                clubList.Add(new Club(lineField[2]));
-
+                else
+                {
+                    searchClubs.AddClubRegistration(newRegistration);
+                }
             }
 
-            foreach (var VARIABLE in registrationList)
+            foreach (var club in clubList)
             {
-                Console.WriteLine($"{VARIABLE._startNumber} - {VARIABLE._name} - {VARIABLE._club}");
+                FindClub(clubList, club.Name).PrintClubNameAndMembers();
             }
-
-
         }
-        public Club returnClub(Club clublist, string clubName)
+
+        private static Club? FindClub(List<Club> clubList, string lineField)
         {
-            return clublist.
+            return clubList.FirstOrDefault(club => club.Name == lineField);
         }
     }
 }
